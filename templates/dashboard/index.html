@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+{% extends 'dashboard/base.html' %}
+{% load static %}
+ {% load leaflet_tags %}
+{% block body_block %}
+
+    <script>
+        function map_init_basic(map, options) {
+      var jetty_url = "http://127.0.0.1:8000/api/jetty";
+      var route_url = "http://127.0.0.1:8000/api/route";
+     var depth_url = 'http://127.0.0.1:8000/api/depth';
+      var deptha_url = 'http://127.0.0.1:8000/api/deptha';
+      var depthb_url = 'http://127.0.0.1:8000/api/depthb';
+      var depthc_url = 'http://127.0.0.1:8000/api/depthc';
+      var depthd_url = 'http://127.0.0.1:8000/api/depthd';
+      var myIcon = L.icon({
+        iconUrl: "../images/boats.png",
+        iconSize: [38, 95],
+        iconAnchor: [22, 94],
+        popupAnchor: [-3, -76],
+        shadowSize: [68, 95],
+        shadowAnchor: [22, 94]
+      });
+      var jettyLayer = new L.GeoJSON.AJAX(jetty_url,{
+              onEachFeature: function onEachFeature(feature, layer) {
+                var props = feature.properties;
+                var dets = feature.id
+                var content = `<h3>${props.name}</h3>`;
+                layer.bindPopup(content);
+                layer.on("mouseover",function(ev){
+                  this.openPopup();
+                });
+                layer.on("mouseout", function(evv){
+                  this.closePopup();
+                });
+                layer.on("click", function(e){
+                  document.getElementsByClassName('laswaside')[1].click();
+                  console.log(dets)
+                });
+                //layer.setIcon(new myIcon);
+      }
+    });
+jettyLayer.addTo(map)
+var routeLayer = new L.GeoJSON.AJAX(route_url,{
+        
+      });
+      routeLayer.addTo(map);
+var depthLayer = new L.GeoJSON.AJAX(depth_url,{
+});
+depthLayer.addTo(map);
+//var depthaLayer = new L.GeoJSON.AJAX(deptha_url,{
+//});
+//depthaLayer.addTo(map);
+//var depthbLayer = new L.GeoJSON.AJAX(depthb_url,{
+//});
+//depthbLayer.addTo(map);
+//var depthcLayer = new L.GeoJSON.AJAX(depthc_url,{
+//});
+//depthcLayer.addTo(map);
+//var depthdLayer = new L.GeoJSON.AJAX(depthd_url,{
+//});
+//depthdLayer.addTo(map);
+    }
+    </script>
+    {% leaflet_map "lagosMap" callback="window.map_init_basic" %}
+
+    {% endblock %}
